@@ -1,10 +1,8 @@
-console.log("Lets see something");
-
-
-
+// Creating files and data to be cached - storing in variables to use later
 const cacheName = 'file-v1';
 const dataCacheName = 'data-v1';
 
+// Declaring which files we want to cache
 const filesToCache = [
     "/",
     "/styles.css",
@@ -13,9 +11,10 @@ const filesToCache = [
     "/icons/icon-512x512.png",
 ];
 
+// Creating event listener to wait until caches are found
 self.addEventListener('install', (event) => {
     console.log('hit install');
-
+    // Once caches are found, open the files and return all files
     event.waitUntil(
         caches
             .open(cacheName)
@@ -24,37 +23,39 @@ self.addEventListener('install', (event) => {
             })
             .catch(error => console.log(error))
     );
-
-
+    // Tells the service worker to skip waiting and immediately activate
     self.skipWaiting();
 });
 
-// self.addEventListener('activate', (event) => {
-//     console.log('hit activate');
-//     event.waitUntil(
-//         caches
-//             .keys()
-//             .then(keyList => {
-//                 return Promise.all(
-//                     keyList.map(key => {
-//                         if (key !== cacheName && key !== dataCacheName) {
-//                             console.log('deleting cache');
-//                             return caches.delete(key);
-//                         }
-//                     })
-//                 )
-//             })
-//             .catch(error => console.log(error))
-//     );
+// Creating event listener to wait until service worker is activated
+self.addEventListener('activate', (event) => {
+    console.log('hit activate');
+    // Waits until caches are found by keys then retuns all caches
+    event.waitUntil(
+        caches
+            .keys()
+            .then(keyList => {
+                return Promise.all(
+                    // Mapping over each key and if it's equal to a cache file and cache data, then deletes the cache by key
+                    keyList.map(key => {
+                        if (key !== cacheName && key !== dataCacheName) {
+                            console.log('deleting cache');
+                            return caches.delete(key);
+                        }
+                    })
+                )
+            })
+            .catch(error => console.log(error))
+    );
+    // Allows active service worker to control all clients within it's scope
+    self.clients.claim();
+});
 
-//     self.clients.claim();
-// });
-
+// Creating event listener to fetch all caches
 self.addEventListener('fetch', (event) => {
     console.log('hit fetch');
-    console.log(event.request.url);
 
-    // handle api caching
+    // handles api caching
     if (event.request.url.includes('/api')) {
         return event.respondWith(
             caches
@@ -67,7 +68,6 @@ self.addEventListener('fetch', (event) => {
                             if (response.status === 200) {
                                 cache.put(event.request.url, response.clone());
                             }
-
                             return response;
                         })
                         .catch(err => {
@@ -78,25 +78,20 @@ self.addEventListener('fetch', (event) => {
                 })
         )
     }
-
-
+    // If caches are found and match with the request they are returned
     event.respondWith(
         caches
             .match(event.request)
             .then(response => {
-                // console.log('cache match response: ', response);
                 if (response) {
-                    // console.log('response returned');
                     return response;
                 }
-
                 return fetch(event.request)
                     .then((response) => {
                         if (!response || !response.basic || !response.status !== 200) {
                             console.log('fetch response: ', response);
                             return response;
                         }
-
                         // response is a stream, reading will consume the response
                         const responseToCache = response.clone();
 
