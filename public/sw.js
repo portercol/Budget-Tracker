@@ -5,8 +5,11 @@ const dataCacheName = 'data-v1';
 // Declaring which files we want to cache
 const filesToCache = [
     "/",
+    "/db.js",
     "/styles.css",
     "/index.js",
+    "/index.html",
+    "/manifest.webmanifest",
     "/icons/icon-192x192.png",
     "/icons/icon-512x512.png",
 ];
