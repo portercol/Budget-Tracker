@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const compression = require("compression");
 
 // Require dotenv package to use environment variables
-require('dotenv').congig();
+require('dotenv').config();
 
 // Create PORT to run on whatever is available OR PORT 3000
 const PORT = process.env.PORT || 3000;
