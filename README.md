@@ -7,12 +7,12 @@ Link to deployed site: [Budget Tracker](https://salty-escarpment-91898.herokuapp
 ## Description
 A budget-tracking app that allows the user to enter deposits with or without an internet connection. When entering deposits offline, they will be populated to the total when brought back online.
 
-## How it works
+### How it works
 1. Make a transaction (deposit or expense)
 2. Watch your total adjust accordingly
 3. If OFFLINE - db will repopulate when brought back online
 
-## App images
+#### App images
 Home Page
 ![Budget Tracker](./public/images/homePage.png)
 PWA Format
